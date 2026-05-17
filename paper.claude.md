@@ -36,6 +36,12 @@
     - こちらも，タイトルケース（大文字）にしなくてよく，文頭だけ大文字にする．
     - proposed system などの簡易的なものではなく，中身についても触れる．長くなる場合は，前半に要約を太字で入れ，説明を追加する．
 - Sec1で述べた〜〜，や，〜〜〜は後述する，という表現は使用しない．特に，後述する，となる場合は文章全体を再考し，先に述べる方法はないか検討する．
+- 'の使用方法について
+    - user’sではなく，user'sとする．
+        - ASCII の アポストロフィ (U+0027) ではなく Unicode の RIGHT SINGLE QUOTATION MARK (U+2019) になっていました. LaTeX で 通常使う アポストロフィと 異なるため 表記不整合です. 
+- American Englishを使用する
+    - British spelling と American spelling が混在しています．
+    - 例：behaviour, centre, minimise, utilising, favourably と，behavior, center, summarizes, utilize
 
 ## 段落わけについて
 
@@ -127,6 +133,51 @@
 - 末尾にたまについてるIEEEやACMなどの学会名は消す
 - arxivは会議に採択されたりしていないかを確認する
 
+### 引用チェックの実施方針
+
+引用チェックの依頼があったら，以下の手順で実施する.
+
+#### 1. 重複エントリの検出
+- `grep -n "@" main.bib` で 全エントリのキーを 列挙
+- 同一キーの 重複があれば 削除を 提案
+
+#### 2. エントリ型と フィールドの 整合確認
+- `@inproceedings` なのに `journal` フィールドを 持つ → `@article` への 変更を 検討
+- `@article` なのに 会議録 (RSS, NeurIPS など) を 指している → `@inproceedings` への 変更を 検討
+- 会議録は `booktitle` を 使い, ジャーナル論文は `journal` を 使う
+
+#### 3. 会議論文 (@inproceedings) のチェック
+- `booktitle` が ``Proceedings of the ...'' で 始まるか
+- 略称が ``(ICRA)'' / ``(CVPR)'' のように 括弧書きで 末尾に 付いているか
+- 年度が booktitle 内 (``the 2024 IEEE ...'') または `year` フィールドに 含まれるか
+- `organization={IEEE}` / `publisher={ACM}` などの 学会名フィールドは **削除**
+- `editor` フィールドは **削除**
+
+#### 4. ジャーナル論文 (@article) のチェック
+- `volume`, `number` (任意), `pages` の 揃いを 確認
+- 欠落があれば 公式 DOI / journal page を Web で 確認して 補完
+
+#### 5. arXiv プレプリントのチェック
+- 各 arXiv エントリについて 会議採択されていないか **Web 検索で 必ず 確認**
+- 採択済みなら `@inproceedings` に 変換し, 採択先 (会議名 + 年 + ページ) を 記載
+- arXiv のままなら, bib スタイル `tfnlm` の ピリオド削除問題を 回避するため `journal={arXiv preprint arXiv:{NNNN.NNNNN}}` の 形式に 統一する (中括弧で ピリオド保護)
+- 表記揺れ (``arxiv:'' lowercase, ``arXiv preprint arXiv:'' redundant) は ``arXiv preprint arXiv:{...}'' に 統一
+
+#### 6. @misc エントリ (URL 引用) のチェック
+- 全エントリで `author / title / howpublished / year / note` の フィールド 順を 統一
+- 全フィールドを `{...}` 形式に (``"..."'' は 使わない)
+- `note` は ``Accessed: DD Mon. YYYY'' の 形式に 統一 (例: ``Accessed: 17 May 2026'')
+- `author` が 不明な GitHub プロジェクトは Web 検索で 著者名と 初版年を 確認
+- `year` は リポジトリ作成年 または 初版リリース年を 用いる
+
+#### 7. 本文中の 引用使用状況の 確認
+- `\cite{xxx}` の `xxx` が 全て bib 内に 存在するか
+- bib 内の エントリが 本文で 引用されているか (孤立エントリは 削除候補)
+
+#### 8. ファクトチェックは ユーザに 戻す
+- 年度の 推測 (キー名 / 既存 year フィールドから の 推定) は ユーザに 明示
+- 会議採択確認の 結果は 別ファイル に bib 候補と ソース URL を 記載して 最終差し替えは ユーザに 任せる
+
 
 # 査読に際して
 
@@ -183,3 +234,5 @@
 - 引用符(")がおかしくないか
     - Latexでは，全角や半角の"”を使用しない．
     - ``Sample''と書くこと．
+- 'がおかしくないか．
+    - ’や’ではなく，'
