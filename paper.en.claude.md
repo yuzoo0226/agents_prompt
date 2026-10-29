@@ -42,6 +42,8 @@
 - American Englishを使用する
     - British spelling と American spelling が混在しています．
     - 例：behaviour, centre, minimise, utilising, favourably と，behavior, center, summarizes, utilize
+- 文頭に数字や記号を使用しない．
+    - C is ~~~~~. ではなくする．
 
 ## 段落わけについて
 
